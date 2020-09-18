@@ -37,6 +37,20 @@ class Certificate:
 
         cert.gmtime_adj_notBefore(0)
         cert.gmtime_adj_notAfter(31 * 24 * 60 * 60)
+        """
+        import socket
+        sans = "DNS:{}".format(str(socket.gethostname()))
+        cert.add_extensions([
+            crypto.X509Extension(
+                b"keyUsage", False,
+                b"Digital Signature, Non Repudiation, Key Encipherment"),
+            crypto.X509Extension(
+                b"basicConstraints", False, b"CA:FALSE"),
+            crypto.X509Extension(
+                b'extendedKeyUsage', False, b'serverAuth, clientAuth'),
+            crypto.X509Extension(
+                b"subjectAltName", False, sans.encode())
+        ])"""
 
         cert.set_issuer(cert.get_subject())
         cert.set_pubkey(key)
